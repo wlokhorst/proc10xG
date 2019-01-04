@@ -50,11 +50,8 @@ def make_sure_path_exists(path):
     return path
 
 
-rcs = string.translate({ord(x): y for (x, y) in zip('TAGCtagc', 'ATCGATCG')})
-
-
 def revcomp(seq):
-    return seq.translate(rcs)[::-1]
+    return seq.translate({ord(x): y for (x, y) in zip('TAGCtagc', 'ATCGATCG')})[::-1]
 
 
 def rev(seq):
