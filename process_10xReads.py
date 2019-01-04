@@ -8,6 +8,7 @@ identify and extract the gem barcode, compare it to a white list
 and then strip off the random priming region. Attach all the sequence
 data to the end of the read ids
 """
+from __future__ import division
 import traceback
 import argparse
 import sys
@@ -49,7 +50,7 @@ def make_sure_path_exists(path):
     return path
 
 
-rcs = string.maketrans('TAGCtagc', 'ATCGATCG')
+rcs = string.translate({ord(x): y for (x, y) in zip('TAGCtagc', 'ATCGATCG')})
 
 
 def revcomp(seq):
