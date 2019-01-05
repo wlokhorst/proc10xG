@@ -383,13 +383,13 @@ class IlluminaTwoReadOutput:
         # read 1
         self.R1f.write(((' ').join([newid, (':').join(['1', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n').encode())
         self.R1f.write((fragment['read1_seq'] + '\n').encode())
-        self.R1f.write(('+\n')encode())
-        self.R1f.write((fragment['read1_qual'] + '\n')encode())
+        self.R1f.write(('+\n').encode())
+        self.R1f.write((fragment['read1_qual'] + '\n').encode())
         # read 2
-        self.R2f.write(((' ').join([newid, (':').join(['2', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n')encode())
-        self.R2f.write((fragment['read2_seq'] + '\n')encode())
-        self.R2f.write(('+\n')encode())
-        self.R2f.write((fragment['read2_qual'] + '\n')encode())
+        self.R2f.write(((' ').join([newid, (':').join(['2', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n').encode())
+        self.R2f.write((fragment['read2_seq'] + '\n').encode())
+        self.R2f.write(('+\n').encode())
+        self.R2f.write((fragment['read2_qual'] + '\n').encode())
         self.mcount += 1
 
     def writeFastqInterleaved(self, fragment):
