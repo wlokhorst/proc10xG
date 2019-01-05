@@ -8,7 +8,7 @@ identify and extract the gem barcode, compare it to a white list
 and then strip off the random priming region. Attach all the sequence
 data to the end of the read ids
 """
-from __future__ import division
+from __future__ import division, unicode_literals
 import traceback
 import argparse
 import sys
@@ -381,18 +381,19 @@ class IlluminaTwoReadOutput:
     def writePairedFastq(self, fragment):
         newid = '@' + (':').join([fragment['gem_bc'], fragment['id']])
         # read 1
-        self.R1f.write((' ').join([newid, (':').join(['1', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n')
-        self.R1f.write(fragment['read1_seq'] + '\n')
-        self.R1f.write('+\n')
-        self.R1f.write(fragment['read1_qual'] + '\n')
+        self.R1f.write(((' ').join([newid, (':').join(['1', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n').encode())
+        self.R1f.write((fragment['read1_seq'] + '\n').encode())
+        self.R1f.write(('+\n')encode())
+        self.R1f.write((fragment['read1_qual'] + '\n')encode())
         # read 2
-        self.R2f.write((' ').join([newid, (':').join(['2', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n')
-        self.R2f.write(fragment['read2_seq'] + '\n')
-        self.R2f.write('+\n')
-        self.R2f.write(fragment['read2_qual'] + '\n')
+        self.R2f.write(((' ').join([newid, (':').join(['2', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n')encode())
+        self.R2f.write((fragment['read2_seq'] + '\n')encode())
+        self.R2f.write(('+\n')encode())
+        self.R2f.write((fragment['read2_qual'] + '\n')encode())
         self.mcount += 1
 
     def writeFastqInterleaved(self, fragment):
+        fragment = dict((k, str(v)) for k, v in fragment.items())
         newid = '@' + (':').join([fragment['gem_bc'], fragment['id']])
         # read 1
         self.R1f.write((' ').join([newid, (':').join(['1', 'N', '0', fragment['library_bc'], ("_").join([fragment['status'], fragment['sgem_bc'], fragment['sgem_qual'], fragment['trim_seq'], fragment['trim_qual']])])]) + '\n')
