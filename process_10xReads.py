@@ -226,19 +226,19 @@ class TwoReadIlluminaRun:
             try:
                 # pull in read 1
                 status = 'UNKNOWN'
-                id1 = self.R1.next().strip()
-                seq1 = self.R1.next().strip()
-                self.R1.next()  # *
-                qual1 = self.R1.next().strip()
+                id1 = self.R1.readline().strip()
+                seq1 = self.R1.readline().strip()
+                self.R1.readline()  # *
+                qual1 = self.R1.readline().strip()
                 assert(len(seq1) == len(qual1))
                 if id1 == '' or seq1 == ''or qual1 == '':
                     self.close()
                     raise StopIteration
                 # pull in read2
-                id2 = self.R2.next().strip()
-                seq2 = self.R2.next().strip()
-                self.R2.next()  # *
-                qual2 = self.R2.next().strip()
+                id2 = self.R2.readline().strip()
+                seq2 = self.R2.readline().strip()
+                self.R2.readline()  # *
+                qual2 = self.R2.readline().strip()
                 assert(len(seq2) == len(qual2))
                 if id2 == '' or seq2 == ''or qual2 == '':
                     self.close()
