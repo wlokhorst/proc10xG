@@ -8,7 +8,7 @@ identify and extract the gem barcode, compare it to a white list
 and then strip off the random priming region. Attach all the sequence
 data to the end of the read ids
 """
-from __future__ import division, print_function
+from __future__ import division
 import traceback
 import argparse
 import sys
@@ -486,7 +486,6 @@ def main(read1, read2, output_dir, output_all, interleaved, profile, bctrim, tri
             output.writeRead(fragment)
 
             if read_count % 250000 == 0 and verbose:
-                sys.stderr.write(str(read_count)+"\n")
                 sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads\/sec:%i|barcodes:%i|median_reads\/barcode:%.2f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
 
     except StopIteration:
