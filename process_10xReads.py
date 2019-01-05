@@ -486,7 +486,7 @@ def main(read1, read2, output_dir, output_all, interleaved, profile, bctrim, tri
             output.writeRead(fragment)
 
             if read_count % 250000 == 0 and verbose:
-                sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads\/sec:%i|barcodes:%i|median_reads\/barcode:%.2f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
+                sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads/sec:%i|barcodes:%i|median_reads/barcode:%.2f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(list(gbcCounter.values())))
 
     except StopIteration:
         with open(output_dir + '_barcodes.txt', 'w') as f:
@@ -494,7 +494,7 @@ def main(read1, read2, output_dir, output_all, interleaved, profile, bctrim, tri
         output.close()
 
         if verbose:
-            sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads\/sec:%i|barcodes:%i|reads\/barcode:%f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
+            sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads/sec:%i|barcodes:%i|reads/barcode:%f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(list(gbcCounter.values()))))
             sys.stderr.write("PROCESS\tBARCODE\tMATCH: %i (%.2f%%)\n" % (barcode_match, (float(barcode_match) / read_count) * 100))
             sys.stderr.write("PROCESS\tBARCODE\tMISMATCH1: %i (%.2f%%)\n" % (barcode_1mismatch, (float(barcode_1mismatch) / read_count) * 100))
             sys.stderr.write("PROCESS\tBARCODE\tAMBIGUOUS: %i (%.2f%%)\n" % (barcode_ambiguous, (float(barcode_ambiguous) / read_count) * 100))
