@@ -8,7 +8,7 @@ identify and extract the gem barcode, compare it to a white list
 and then strip off the random priming region. Attach all the sequence
 data to the end of the read ids
 """
-from __future__ import division
+from __future__ import division, print_function
 import traceback
 import argparse
 import sys
@@ -226,19 +226,19 @@ class TwoReadIlluminaRun:
             try:
                 # pull in read 1
                 status = 'UNKNOWN'
-                id1 = self.R1.readline().strip()
-                seq1 = self.R1.readline().strip()
+                id1 = self.R1.readline().decode('utf-8').strip()
+                seq1 = self.R1.readline().decode('utf-8').strip()
                 self.R1.readline()  # *
-                qual1 = self.R1.readline().strip()
+                qual1 = self.R1.readline().decode('utf-8').strip()
                 assert(len(seq1) == len(qual1))
                 if id1 == '' or seq1 == ''or qual1 == '':
                     self.close()
                     raise StopIteration
                 # pull in read2
-                id2 = self.R2.readline().strip()
-                seq2 = self.R2.readline().strip()
+                id2 = self.R2.readline().decode('utf-8').strip()
+                seq2 = self.R2.readline().decode('utf-8').strip()
                 self.R2.readline()  # *
-                qual2 = self.R2.readline().strip()
+                qual2 = self.R2.readline().decode('utf-8').strip()
                 assert(len(seq2) == len(qual2))
                 if id2 == '' or seq2 == ''or qual2 == '':
                     self.close()
@@ -486,7 +486,8 @@ def main(read1, read2, output_dir, output_all, interleaved, profile, bctrim, tri
             output.writeRead(fragment)
 
             if read_count % 250000 == 0 and verbose:
-                sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads/sec:%i|barcodes:%i|median_reads/barcode:%.2f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
+                sys.stderr.write(str(read_count)+"\n")
+                sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads\/sec:%i|barcodes:%i|median_reads\/barcode:%.2f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
 
     except StopIteration:
         with open(output_dir + '_barcodes.txt', 'w') as f:
@@ -494,7 +495,7 @@ def main(read1, read2, output_dir, output_all, interleaved, profile, bctrim, tri
         output.close()
 
         if verbose:
-            sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads/sec:%i|barcodes:%i|reads/barcode:%f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
+            sys.stderr.write("PROCESS\tREADS\treads analyzed:%i|reads\/sec:%i|barcodes:%i|reads\/barcode:%f\n" % (read_count, round(read_count / (time.time() - stime), 0), len(gbcCounter), median(gbcCounter.values())))
             sys.stderr.write("PROCESS\tBARCODE\tMATCH: %i (%.2f%%)\n" % (barcode_match, (float(barcode_match) / read_count) * 100))
             sys.stderr.write("PROCESS\tBARCODE\tMISMATCH1: %i (%.2f%%)\n" % (barcode_1mismatch, (float(barcode_1mismatch) / read_count) * 100))
             sys.stderr.write("PROCESS\tBARCODE\tAMBIGUOUS: %i (%.2f%%)\n" % (barcode_ambiguous, (float(barcode_ambiguous) / read_count) * 100))
