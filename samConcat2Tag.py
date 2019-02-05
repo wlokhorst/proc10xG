@@ -3,6 +3,8 @@
 Copyright 2017 Matt Settles
 Created June 8, 2017
 
+Revised by Wouter Lokhorst, 5FEB2019
+
 bwa mem -C option concatenates the fasta/fastq
 CTACATTGTCAAGGGT:E00558:34:HGCJ3ALXX:1:1101:2108:1731   99      000000F 9225\
 71  60      127M    =       922961  517     ACTCGGGGAGGTGTTAGCTGCTGCCTCACACA\
@@ -22,11 +24,16 @@ from itertools import islice
 
 
 def make_output_file(out_name):
+    """Creates the output file.
+    """
     with open(out_name, "w") as outfile:
         pass
 
 
 def write_line(out_name, line):
+    """Writes a single line to either stdout or the output file.
+    """
+    # Checks if out_name is a string.
     if isinstance(out_name, str):
         out = open(out_name, "a")
         out.write(line)
@@ -36,6 +43,14 @@ def write_line(out_name, line):
 
 
 def extract_tag(line, out_name):
+    """Extracts the GEM tag for a single alignment line.
+
+    Input:
+    - line: string (the alignment line)
+    - out_name: either a string (full path of the output file) or stdout
+    Output:
+    - An alignment file without the GEM tags
+    """
     line2 = line.strip().split()
     # Comment/header lines start with @
     if line[0] != "@" and len(line2) > 2:
@@ -83,7 +98,9 @@ def handle_args():
     """Handles arguments both in the command line and in IDLE.
 
     Output:
-    - string (directory pathname)
+    Tuple, consisting of:
+    - string (input filename or stdin)
+    - string (output filename or stdout)
     """
     version_num = "0.0.2"
     # Tries to execute the script with command line arguments.
@@ -124,17 +141,19 @@ if __name__ == "__main__":
     else:
         make_output_file(outb + ".sam")
     if inp == 'stdin':
-        # reading from stdin
+        # Reading from stdin.
         insam = sys.stdin
     else:
         if not os.path.exists(inp):
             sys.exit("Error, can't find input file %s" % inp)
         insam = open(inp, 'r')
+    # Read the file line by line, without loading it all into memory.
     while True:
         chunk = list(islice(insam, 1))
         if not chunk:
             break
         line = chunk[0]
         extract_tag(line, out)
+    # Checks if insam is a string.
     if isinstance(insam, str):
         insam.close()
