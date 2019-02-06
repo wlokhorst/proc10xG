@@ -21,6 +21,9 @@ import sys
 import os
 import argparse
 from itertools import islice
+import multiprocessing as mp
+
+lock = mp.Lock()
 
 
 def make_output_file(out_name):
@@ -33,6 +36,7 @@ def make_output_file(out_name):
 def write_line(out_name, line):
     """Writes a single line to either stdout or the output file.
     """
+    lock.acquire()
     # Checks if out_name is a string.
     if isinstance(out_name, str):
         out = open(out_name, "a")
@@ -40,6 +44,7 @@ def write_line(out_name, line):
         out.close()
     else:
         sys.stdout.write(line)
+    lock.release()
 
 
 def extract_tag(line, out_name):
@@ -101,6 +106,7 @@ def handle_args():
     Tuple, consisting of:
     - string (input filename or stdin)
     - string (output filename or stdout)
+    - integer (number of CPUs)
     """
     version_num = "0.0.2"
     # Tries to execute the script with command line arguments.
@@ -127,15 +133,18 @@ correct arguments. Type -h for help.\n")
         argparser.add_argument('-o', '--output_base',
             help="Directory + prefix to output, [default: %(default)s]",
             action="store", type=str, dest="output_base", default="stdout")
+	argparser.add_argument("-@", "--cpus", help="The number of CPUs\
+to use.", type=int, default=1)
         # Parses the arguments given in the shell.
         args = argparser.parse_args()
         inp = args.inputfile
         outb = args.output_base
-    return inp, outb
+	cpus = args.cpus
+    return inp, outb, cpus
 
 
 if __name__ == "__main__":
-    inp, outb = handle_args()
+    inp, outb, cpus = handle_args()
     if outb == "stdout":
         out = FALSE
     else:
@@ -147,13 +156,17 @@ if __name__ == "__main__":
         if not os.path.exists(inp):
             sys.exit("Error, can't find input file %s" % inp)
         insam = open(inp, 'r')
+    # Maximum number of concurrent processes is the given number of CPUs.
+    P = mp.Pool(cpus)
     # Read the file line by line, without loading it all into memory.
     while True:
         chunk = list(islice(insam, 1))
         if not chunk:
             break
         line = chunk[0]
-        extract_tag(line, out)
+	P.apply_async(extract_tag,args=(line, out,))
+    P.close()
+    P.join()
     # Checks if insam is a string.
     if isinstance(insam, str):
         insam.close()
