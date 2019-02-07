@@ -133,7 +133,7 @@ correct arguments. Type -h for help.\n")
         argparser.add_argument('-o', '--output_base',
             help="Directory + prefix to output, [default: %(default)s]",
             action="store", type=str, dest="output_base", default="stdout")
-	argparser.add_argument("-@", "--cpus", 
+	argparser.add_argument("-@", "--cpus",
             help="The number of CPUsto use.", type=int, default=1)
         # Parses the arguments given in the shell.
         args = argparser.parse_args()
