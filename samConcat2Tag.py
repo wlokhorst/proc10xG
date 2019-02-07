@@ -148,7 +148,8 @@ if __name__ == "__main__":
     if outb == "stdout":
         out = FALSE
     else:
-        make_output_file(outb + ".sam")
+        out = outb + ".sam"
+        make_output_file(out)
     if inp == 'stdin':
         # Reading from stdin.
         insam = sys.stdin
