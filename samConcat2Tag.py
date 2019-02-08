@@ -21,9 +21,9 @@ import sys
 import os
 import argparse
 from itertools import islice
-import multiprocessing as mp
+#import multiprocessing as mp
 
-lock = mp.Lock()
+#lock = mp.Lock()
 
 
 def make_output_file(out_name):
@@ -36,7 +36,7 @@ def make_output_file(out_name):
 def write_line(out_name, line):
     """Writes a single line to either stdout or the output file.
     """
-    lock.acquire()
+    #lock.acquire()
     # Checks if out_name is a string.
     if isinstance(out_name, str):
         out = open(out_name, "a")
@@ -44,7 +44,7 @@ def write_line(out_name, line):
         out.close()
     else:
         sys.stdout.write(line)
-    lock.release()
+    #lock.release()
 
 
 def extract_tag(line, out_name):
@@ -158,16 +158,17 @@ if __name__ == "__main__":
             sys.exit("Error, can't find input file %s" % inp)
         insam = open(inp, 'r')
     # Maximum number of concurrent processes is the given number of CPUs.
-    P = mp.Pool(cpus)
+    #P = mp.Pool(cpus)
     # Read the file line by line, without loading it all into memory.
     while True:
         chunk = list(islice(insam, 1))
         if not chunk:
             break
         line = chunk[0]
-        P.apply_async(extract_tag,args=(line, out,))
-    P.close()
-    P.join()
+        extract_tag(line,out)
+        #P.apply_async(extract_tag,args=(line, out,))
+    #P.close()
+    #P.join()
     # Checks if insam is a string.
     if isinstance(insam, str):
         insam.close()
